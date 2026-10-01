@@ -1,0 +1,41 @@
+[project]
+name = "plateprior"
+version = "0.1.0"
+description = "Plate-wise batch Bayesian optimization of culture media with a pretrained tabular model (TabPFN), and the simulation benchmark behind the accompanying paper"
+readme = "README.md"
+requires-python = ">=3.11,<3.14"
+license = { file = "LICENSE" }
+
+# ベースライン + GP アーム (random / lhs / gp_kb / gp_lp / gp_ts / gp_qei) に必要な最小構成。
+# CPU のみで完結する。
+dependencies = [
+    "numpy>=1.26",
+    "scipy>=1.11",
+    "pandas>=2.0",
+    "matplotlib>=3.8",
+    "scikit-learn>=1.4",
+]
+
+[project.optional-dependencies]
+# TabPFN アーム (tabpfn_kb / tabpfn_lp / tabpfn_ts / tabpfn_qei)。torch を引き込む。
+# results/ の既存結果は TabPFN v2 系で取得しているため 2.x に固定する
+# (surrogates.py が tabpfn-v2-regressor.ckpt をピンしている)。
+tabpfn = [
+    "torch>=2.2",
+    "tabpfn>=2.0,<3",
+]
+# BoTorch qLogNEI アーム (gp_qlognei)。
+botorch = [
+    "torch>=2.2",
+    # SAASBO (SaasFullyBayesianSingleTaskGP) は fully_bayesian extra が要る
+    "botorch[fully_bayesian]>=0.11",
+    "gpytorch>=1.11",
+]
+# Modal 上での分散実行 (modal_app.py)。
+modal = [
+    "modal>=1.0",
+]
+
+[tool.uv]
+# 配布パッケージではなく実行スクリプト群なので、ビルド/インストールは行わない。
+package = false

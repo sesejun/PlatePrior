@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+message: "If you use this software or data, please cite it as below."
+title: "PlatePrior: plate-wise batch Bayesian optimization of culture media with a pretrained tabular model"
+authors:
+  - family-names: Sese
+    given-names: Jun
+    affiliation: "Humanome Lab., Inc."
+license: MIT
+repository-code: "https://github.com/sesejun/PlatePrior"
+keywords:
+  - Bayesian optimization
+  - culture medium optimization
+  - TabPFN
+  - batch selection
+  - simulation

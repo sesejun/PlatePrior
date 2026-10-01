@@ -1,0 +1,40 @@
+{
+  "sources": {
+    "P1A": {
+      "path": "results/v2a_runs_P1A.csv",
+      "sha256": "f6cdb8aac3e8d8dcdfd4339ee3c294ac4db37e9ea9fcfb9807a17eccedf5d6d0",
+      "rows": 14000
+    },
+    "P3": {
+      "path": "results/v2a_runs_P3.csv",
+      "sha256": "73dcc21b9a38b5564e61df1f702cfc483f1362e0e687f798bd8912b53522b977",
+      "rows": 9000
+    },
+    "B1": {
+      "path": "results/v2a_runs_B1.csv",
+      "sha256": "02fe1fa75fc5cf46fb323f790e681c8bdba1b6cfe5c4981d594d48a07d12c593",
+      "rows": 10800
+    },
+    "B0": {
+      "path": "results/v2a_runs_B0.csv",
+      "sha256": "f3a2e1172ee8e0a373ef24d3ee331f63b32b1d41e94b9aa4652db433292749e2",
+      "rows": 60
+    },
+    "P2": {
+      "path": "results/v2a_runs_P2.csv",
+      "sha256": "8dadf7184b9d7711b54388bab49aa712f1fd6325ce7994005d2a8b627f3e956d",
+      "rows": 900
+    },
+    "S": {
+      "path": "results/v2a_runs_S.csv",
+      "sha256": "d1b6957fb163f171d527c593c7e600965026d490690a5f61c675a7d4660e7e10",
+      "rows": 30
+    }
+  },
+  "main_campaigns": 4600,
+  "B1_rows_overlapping_main": 3600,
+  "overlap_max_best_true_difference": 0.0,
+  "initial_max_best_true_difference": 9.498184652656505e-05,
+  "main_missing_checkpoint_sha": 23000,
+  "note": "ANALYSIS_v2a pools embedding configurations in final_scores; not used. Main uses P1A/P3 only; B1 stratified by config. Bootstrap 20000 per contrast, stable hash-derived seeds. Secondary Holm families retrospective."
+}
