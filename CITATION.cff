@@ -6,6 +6,7 @@ authors:
     given-names: Jun
     affiliation: "Humanome Lab., Inc."
 license: MIT
+doi: 10.5281/zenodo.23154571
 repository-code: "https://github.com/sesejun/PlatePrior"
 keywords:
   - Bayesian optimization

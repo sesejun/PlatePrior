@@ -1,6 +1,10 @@
 # PlatePrior
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23154571.svg)](https://doi.org/10.5281/zenodo.23154571)
+
 Plate-wise batch Bayesian optimization of culture media with a pretrained tabular model.
+
+Built with PriorLabs-TabPFN.
 
 PlatePrior chooses the conditions of a 96-well plate with TabPFN, a pretrained tabular
 model used without retraining, and the Kriging believer rule: it selects four conditions,
@@ -104,10 +108,16 @@ license terms.
 - Code: MIT License (`LICENSE`)
 - Data, summary tables and figures (`results/`, `analysis/tables/`, `analysis/figures/`):
   CC BY 4.0 (`results/LICENSE.md`)
+- TabPFN is a third-party dependency and is not included here. The code uses the TabPFN v2
+  regression checkpoint by default, which is distributed under the Prior Labs License 1.1
+  (Apache 2.0 with an attribution requirement). Later TabPFN generations, selectable through
+  the `PBO_TABPFN_MODEL` environment variable, are distributed under separate Prior Labs
+  licenses, some of which restrict commercial use. Check the license of the weights you use.
 
 ## Citation
 
-Please cite the manuscript above; until it is published, cite this repository
-(`CITATION.cff`).
+Please cite the manuscript above. To cite this software and data, use the Zenodo record:
+version 1.0.0, doi:[10.5281/zenodo.23154572](https://doi.org/10.5281/zenodo.23154572); all versions,
+doi:[10.5281/zenodo.23154571](https://doi.org/10.5281/zenodo.23154571) (see also `CITATION.cff`).
 
 The code was developed with the help of AI coding assistants and reviewed by the author.
