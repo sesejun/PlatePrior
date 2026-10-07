@@ -120,7 +120,8 @@ license terms.
 ## Citation
 
 Please cite the manuscript above. To cite this software and data, use the Zenodo record:
-version 1.0.0, doi:[10.5281/zenodo.23154572](https://doi.org/10.5281/zenodo.23154572); all versions,
+version 1.0.1 (the version cited in the manuscript), doi:[10.5281/zenodo.23200480](https://doi.org/10.5281/zenodo.23200480);
+all versions,
 doi:[10.5281/zenodo.23154571](https://doi.org/10.5281/zenodo.23154571) (see also `CITATION.cff`).
 
 The code was developed with the help of AI coding assistants and reviewed by the author.
