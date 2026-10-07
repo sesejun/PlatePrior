@@ -16,8 +16,8 @@ This repository contains the implementation, the simulation benchmark, the run-l
 results of all 8,920 simulated campaigns, and the scripts that regenerate every table and
 figure of the accompanying manuscript:
 
-> Jun Sese. Essential components, not component count, determine when a pretrained model
-> improves simulated culture-medium optimization. Manuscript submitted.
+> Jun Sese. A tabular foundation model finds higher-biomass media with limited experimental
+> feedback in simulated culture-medium optimization. Manuscript submitted.
 
 All results are from simulation; no laboratory data are included.
 
@@ -51,13 +51,14 @@ uv run python analysis/reanalyze.py         # main evaluation, embedding control
 uv run python analysis/grid_table.py        # factorial simulation
 uv run python analysis/structural_table.py  # comparison with structural baselines
 uv run python analysis/make_figures.py      # Figs 1-3 (PNG and TIFF)
+uv run python analysis/parameter_associations.py  # post hoc associations (S1 Fig, S3 Table)
 ```
 
 The outputs in `analysis/tables/` and `analysis/figures/` are committed, so they can be
-compared with a fresh run. `analysis/tables/manifest.json` records the SHA-256 of each input
-CSV. The figures use Arial; on systems without it, matplotlib substitutes another font.
+compared with a fresh run. `analysis/tables/manifest.json` and
+`analysis/tables/parameter_associations/manifest.json` record the SHA-256 of each input. The figures use Arial; on systems without it, matplotlib substitutes another font.
 
-| Manuscript item | File in `analysis/tables/` |
+| Manuscript item | Source files (in `analysis/tables/` unless stated) |
 |---|---|
 | Table 2 | `main_contrasts.csv`, `raw_sensitivity.csv` |
 | Table 3, S1 Table | `scores.csv` |
@@ -65,8 +66,10 @@ CSV. The figures use Arial; on systems without it, matplotlib substitutes anothe
 | Table 5 | `grid_contrasts.csv`, `grid_regression.csv` |
 | Table 6 | `structural_contrasts.csv` |
 | S2 Table | `raw_sensitivity.csv`, `main_contrasts.csv` |
-| Fig 2 | `raw_sensitivity.csv`, `embedding_contrasts.csv` |
+| Fig 1 | `raw_sensitivity.csv` (observed benefit panel) |
+| Fig 2 | `raw_sensitivity.csv`, `embedding_contrasts.csv`; scenario-level points from `results/` (written to `analysis/figures/Fig2_scenario_effects.csv`) |
 | Fig 3 | `curves.csv` |
+| S1 Fig, S3 Table | `parameter_associations/associations.csv`, `scenario_parameters.csv`, `sensitivity.csv` |
 
 ## Data
 

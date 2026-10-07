@@ -1,4 +1,5 @@
-"""Figures 1-3 of the manuscript, drawn from the summary tables in analysis/tables/.
+"""Figures 1-3 of the manuscript, drawn from the summary tables in analysis/tables/
+and, for the scenario-level points of Fig 2, from the run-level results in results/.
 
 The files follow the PLOS figure specifications: TIFF with LZW compression, RGB,
 at most 7.5 in wide, Arial at 8-12 pt.  A PNG of each figure is written too.
@@ -50,246 +51,128 @@ def panel(ax, letter):
 
 
 def fig1():
-    """Overview: (A) campaign, (B) growth model, (C) methods, (D) the three experiments.
-
-    Everything is drawn in inch coordinates on one full-figure axes so that the
-    layout can be read off the numbers.  Blue and orange are reserved for TabPFN
-    and the Gaussian process, as in Figs 2 and 3, so the plates in (A) are gray.
-    """
-    H = 6.8
-    ink, muted, faint, rule = "#1a1a1a", "#555555", "#bdbdbd", "#d9d9d9"
+    """Biological overview; panel B is explicitly a conceptual illustration."""
+    H = 7.25
     fig = plt.figure(figsize=(WIDTH, H))
     ax = fig.add_axes([0, 0, 1, 1])
-    ax.set_xlim(0, WIDTH); ax.set_ylim(0, H); ax.axis("off")
-
-    def text(x, y, s, size=8, **kw):
-        kw.setdefault("color", ink)
-        ax.text(x, y, s, fontsize=size, **kw)
-
-    def title(x, y, letter, s):
-        text(x, y, letter, 11, fontweight="bold", va="center")
-        text(x + 0.22, y, s, 9, fontweight="bold", va="center")
-
-    def arrow(p, q, color=muted, lw=1.0, ms=8):
-        ax.add_patch(FancyArrowPatch(p, q, arrowstyle="-|>", mutation_scale=ms,
-                                     linewidth=lw, color=color, shrinkA=0, shrinkB=0))
-
-    def box(x, y, w, h, face="white", edge=ink, lw=0.8, r=0.04):
-        ax.add_patch(FancyBboxPatch((x, y), w, h, boxstyle=f"round,pad=0,rounding_size={r}",
-                                    linewidth=lw, edgecolor=edge, facecolor=face))
-
-    def square(x, y, size, essential):
-        ax.add_patch(plt.Rectangle((x, y), size, size, linewidth=0.7, edgecolor=ink,
-                                   facecolor=ink if essential else "white"))
-
-    def bar(x, y, length, frac_ess, h=0.09):
-        """A row of components: the essential share filled, the rest open."""
-        ax.add_patch(plt.Rectangle((x, y), length * frac_ess, h, color=ink, lw=0))
-        ax.add_patch(plt.Rectangle((x + length * frac_ess, y), length * (1 - frac_ess), h,
-                                   facecolor="white", edgecolor=ink, lw=0.6))
-
-    # --- A: 5 枚のプレートとその間の培養 ---------------------------------------
-    title(0.08, 6.64, "A", "A simulated campaign: five plates, four opportunities to learn")
-    pw, ph, py = 0.95, 0.60, 5.40
-    xs = [0.32 + i * 1.47 for i in range(5)]
-    for i, x in enumerate(xs):
-        box(x, py, pw, ph, face="#efefef" if i == 0 else "white", r=0.05)
-        gx = np.linspace(x + 0.09, x + pw - 0.09, 12)
-        gy = np.linspace(py + 0.08, py + ph - 0.08, 8)
-        X, Y = np.meshgrid(gx, gy)
-        ax.scatter(X.ravel(), Y.ravel(), s=5, color=faint if i == 0 else muted, linewidths=0)
-        text(x + pw / 2, py + ph + 0.07, f"Round {i}", 8.5, ha="center", va="bottom",
-             fontweight="bold")
-        text(x + pw / 2, py - 0.06, "96 conditions\n(Latin hypercube)" if i == 0
-             else "80 conditions\nin 96 wells", 8, ha="center", va="top", color=muted,
-             linespacing=1.1)
-    for a, b in zip(xs, xs[1:]):
-        arrow((a + pw + 0.05, py + ph / 2), (b - 0.05, py + ph / 2))
-        text((a + pw + b) / 2, py + ph / 2 - 0.05, "culture\ncycle", 8, ha="center", va="top",
-             color=muted, linespacing=1.05)
-    # 適応プレートの上に、測定前に全条件を決めることを示す括弧
-    by = py + ph + 0.30
-    ax.plot([xs[1], xs[1], xs[4] + pw, xs[4] + pw], [by - 0.05, by, by, by - 0.05],
-            color=muted, lw=0.8)
-    text((xs[1] + xs[4] + pw) / 2, by + 0.04,
-         "on each plate, all conditions are chosen before any of them is measured",
-         8, ha="center", va="bottom", color=muted)
-    ax.plot([0.08, WIDTH - 0.08], [4.98, 4.98], color=rule, lw=0.6)
-
-    # --- B: 成長モデル --------------------------------------------------------
-    title(0.08, 4.80, "B", "Growth model")
-    ess = [True, False, True, True, False, False, True, False]
-    sq, sx, top = 0.13, 0.30, 4.30
-    ys = [top - i * 0.19 for i in range(len(ess))]
-    text(sx, top + sq + 0.08, "Components", 8, va="bottom")
-    minc, meanc, r = (1.05, 3.95), (1.05, 3.30), 0.17
-    for y, e in zip(ys, ess):
-        square(sx, y, sq, e)
-        tgt = minc if e else meanc
-        ax.plot([sx + sq, tgt[0] - r], [y + sq / 2, tgt[1]], color=ink if e else faint,
-                lw=0.7, zorder=0)
-    for (cx, cy), lab in ((minc, "min"), (meanc, "mean")):
-        ax.add_patch(plt.Circle((cx, cy), r, facecolor="white", edgecolor=ink, lw=0.8))
-        text(cx, cy, lab, 8, ha="center", va="center")
-    text(minc[0], minc[1] + r + 0.04, "Liebig's law", 8, ha="center", va="bottom", color=muted)
-    text(meanc[0], meanc[1] - r - 0.04, "weighted", 8, ha="center", va="top", color=muted)
-    gw, gh = 0.62, 0.38
-    gx0, gy0 = 1.50, 3.45
-    box(gx0, gy0, gw, gh)
-    text(gx0 + gw / 2, gy0 + gh / 2, "growth\nrate", 8, ha="center", va="center",
-         linespacing=1.05)
-    arrow((minc[0] + r, minc[1]), (gx0, gy0 + gh * 0.72))
-    arrow((meanc[0] + r, meanc[1]), (gx0, gy0 + gh * 0.28))
-    bx0, by0 = 1.50, 2.85
-    box(bx0, by0, gw, gh)
-    text(bx0 + gw / 2, by0 + gh / 2, "biomass\nat 24 h", 8, ha="center", va="center",
-         linespacing=1.05)
-    arrow((gx0 + gw / 2, gy0), (bx0 + gw / 2, by0 + gh))
-    # 凡例: 塗りつぶしが必須成分
-    square(0.30, 2.56, sq, True); text(0.49, 2.625, "essential (probability 0.35)", 8, va="center")
-    square(2.15, 2.56, sq, False); text(2.34, 2.625, "non-essential", 8, va="center")
-    # 挿入図: 必須成分が 2 つのとき、律速成分が入れ替わる点で傾きが急に変わる
-    ins = fig.add_axes([2.62 / WIDTH, 3.00 / H, 1.00 / WIDTH, 1.10 / H])
-    S = np.linspace(0, 10, 400)
-    h1 = S / (1 + S + S ** 2 / 40)
-    g = np.minimum(h1, 0.55)
-    ins.plot(S, h1, color=faint, lw=1.0, ls="--")
-    ins.axhline(0.55, color=faint, lw=1.0, ls="--")
-    ins.plot(S, g, color=ink, lw=1.6)
-    k = np.argmax(h1 >= 0.55)
-    ins.plot(S[k], g[k], "o", ms=5, mfc="white", mec=ink, mew=1.0)
-    ins.set_xticks([]); ins.set_yticks([])
-    ins.set_xlabel("component 1", fontsize=8, labelpad=2)
-    ins.set_ylabel("growth rate", fontsize=8, labelpad=2)
-    ins.set_ylim(0, 0.8); ins.set_xlim(0, 10)
-    ins.annotate("limiting\ncomponent\nswitches", xy=(S[k], g[k]), xytext=(4.6, 0.10),
-                 fontsize=8, color=ink, linespacing=1.05,
-                 arrowprops=dict(arrowstyle="-", color=muted, lw=0.7))
-    text(2.45, 4.22, "Growth follows the scarcest\nessential component", 8, va="bottom",
-         linespacing=1.05)
-
-    # --- C: 比較した手法 --------------------------------------------------------
-    title(3.86, 4.80, "C", "Methods compared")
-    cx0, hw, cw = 3.86, 1.16, 0.80
-    cols = ["Within-plate\nupdating (KB)", "Spreading\n(LP)", "Joint\nselection"]
-    colx = [cx0 + hw + i * cw for i in range(3)]
-    for x, c in zip(colx, cols):
-        text(x + cw / 2, 4.36, c, 8, ha="center", va="bottom", linespacing=1.05)
-    rows = [("TabPFN", "pretrained,\nnot retrained", COLORS["tabpfn_kb"],
-             ["TabPFN KB", "TabPFN LP", "—"]),
-            ("Gaussian process", "assumes a\nsmooth response", COLORS["gp_bo_kb"],
-             ["DS GP KB\nMatérn GP KB", "Matérn GP LP", "GP qLogNEI"])]
-    rh, ry = 0.52, [3.76, 3.20]
-    for (name, sub, col, cells), y in zip(rows, ry):
-        ax.add_patch(plt.Rectangle((cx0, y + rh - 0.13), 0.09, 0.09, color=col, lw=0))
-        text(cx0 + 0.14, y + rh - 0.085, name, 8, va="center", fontweight="bold")
-        text(cx0 + 0.14, y + rh - 0.17, sub, 8, va="top", color=muted, linespacing=1.05)
-        for x, c in zip(colx, cells):
-            ax.add_patch(plt.Rectangle((x, y), cw, rh, facecolor="white", edgecolor=rule, lw=0.6))
-            text(x + cw / 2, y + rh / 2, c, 8, ha="center", va="center", linespacing=1.05,
-                 color=muted if c == "—" else ink)
-    # 中心の比較 (予測モデルだけが違う対) を太枠で囲む
-    ax.add_patch(FancyBboxPatch((colx[0] + 0.02, ry[1] + 0.02), cw - 0.04,
-                                ry[0] + rh - ry[1] - 0.04,
-                                boxstyle="round,pad=0,rounding_size=0.04", linewidth=1.4,
-                                edgecolor=ink, facecolor="none"))
-    text(cx0, 3.04, "Bold outline: the central comparison, in which only the model differs.",
-         8, va="top")
-    text(cx0, 2.84, "Structural assumptions: Fixed TR TS (searches near the best medium),",
-         8, va="top", color=muted)
-    text(cx0, 2.69, "SAAS qLogNEI (few components matter). Control: LHS (no learning).",
-         8, va="top", color=muted)
-    ax.plot([0.08, WIDTH - 0.08], [2.42, 2.42], color=rule, lw=0.6)
-
-    # --- D: 3 つのシミュレーション実験 -------------------------------------------
-    title(0.08, 2.24, "D", "Three simulation experiments")
-    x0s = [0.10, 2.58, 5.06]
-    heads = [("Main evaluation", "Does TabPFN find better media?"),
-             ("Embedding controls", "Is it the number of variables?"),
-             ("Factorial simulation", "Which property of the growth model?")]
-    answers = ["Better media with 80 and\n120 components (Fig 2A, Table 2)",
-               "No: the advantage disappears\n(Fig 2B, Table 4)",
-               "The proportion of essential\ncomponents (Table 5)"]
-    for x, (h, q), a in zip(x0s, heads, answers):
-        text(x, 1.98, h, 8.5, fontweight="bold", va="center")
-        text(x, 1.82, q, 8, va="center", style="italic")
-        text(x, 0.44, "→ " + a, 8, va="top", linespacing=1.1)
-    # D1: 成分数を増やすと、変数の数と必須成分の数が一緒に増える
-    x, full = x0s[0], 1.85
-    for i, d in enumerate((8, 20, 40, 80, 120)):
-        y = 1.55 - i * 0.15
-        bar(x + 0.32, y, full * d / 120, 0.35)
-        text(x + 0.27, y + 0.045, str(d), 8, ha="right", va="center")
-    text(x + 0.32, 0.78, "variables and essential components\nincrease together", 8,
-         va="center", color=muted, linespacing=1.05)
-    # D2: 8 成分のモデルを 120 変数として見せる
-    x, full2 = x0s[1], 1.65
-    bx = x + 0.68
-    for name, y in (("Padded", 1.50), ("Mixed", 1.26), ("120 comp.", 1.02)):
-        text(bx - 0.06, y + 0.045, name, 8, ha="right", va="center")
-    w8 = full2 * 8 / 120
-    bar(bx, 1.50, w8, 0.35)
-    ax.add_patch(plt.Rectangle((bx + w8, 1.50), full2 - w8, 0.09, facecolor="#efefef",
-                               edgecolor=faint, lw=0.6))
-    ax.add_patch(plt.Rectangle((bx, 1.26), full2, 0.09, facecolor="#efefef", edgecolor=faint,
-                               lw=0.6, hatch="////"))
-    bar(bx, 1.02, full2, 0.35)
-    text(bx, 0.82, "all three have 120 variables", 8, va="center", color=muted)
-    # D3: 3x3 の格子。セルの濃さは表 5 の平均差 (TabPFN KB − DS GP KB)
-    grid = pd.read_csv(DATA / "grid_contrasts.csv")
-    x = x0s[2]
-    cwid, chgt, gx, gy = 0.34, 0.24, x + 0.86, 0.66
-    ramp = matplotlib.colors.LinearSegmentedColormap.from_list(
-        "advantage", ["#f2f7fb", COLORS["tabpfn_kb"]])
-    for i, e in enumerate((0.05, 0.35, 0.70)):
-        for j, w in enumerate((0.1, 0.7, 5.0)):
-            v = float(grid[(grid.ess_p == e) & (grid.w_conc == w)]["mean"].iloc[0])
-            ax.add_patch(plt.Rectangle((gx + j * cwid, gy + i * chgt), cwid, chgt,
-                                       facecolor=ramp(max(v, 0) / 0.40), edgecolor="white", lw=1.0))
-            text(gx + j * cwid + cwid / 2, gy + i * chgt + chgt / 2,
-                 f"{v:+.2f}".replace("-", "−"), 8, ha="center", va="center",
-                 color="white" if v > 0.2 else ink)
-        text(gx - 0.05, gy + i * chgt + chgt / 2, f"{e:.2f}", 8, ha="right", va="center")
-    for j, w in enumerate((0.1, 0.7, 5.0)):
-        text(gx + j * cwid + cwid / 2, gy + 3 * chgt + 0.03, f"{w:g}", 8, ha="center",
-             va="bottom")
-    text(gx + 1.5 * cwid, gy + 3 * chgt + 0.19, "weight concentration α", 8, ha="center",
-         va="bottom")
-    text(gx - 0.42, gy + 1.5 * chgt, "essential prob.", 8, ha="center", va="center",
-         rotation=90)
-    save(fig, "Fig1")
+    ax.set(xlim=(0, WIDTH), ylim=(0, H)); ax.axis("off")
+    ink, muted = "#202C36", "#53616D"
+    def text(x, y, label, size=9, **kw):
+        ax.text(x, y, label, fontsize=size, color=ink, **kw)
+    def title(y, letter, label):
+        text(.18, y, letter, 12, weight="bold")
+        text(.44, y, label, 10, weight="bold")
+    def box(x, y, w, h, color="#F1F5F7"):
+        ax.add_patch(FancyBboxPatch((x,y),w,h,boxstyle="round,pad=0,rounding_size=.07",
+                                  facecolor=color,edgecolor="#C7D1D9",lw=.8))
+    def arrow(start,end):
+        ax.add_patch(FancyArrowPatch(start,end,arrowstyle="-|>",mutation_scale=11,
+                                    color=muted,lw=1))
+    def plate(x,y,w=.65,h=.38):
+        box(x,y,w,h,"white")
+        xx,yy=np.meshgrid(np.linspace(x+.06,x+w-.06,12),np.linspace(y+.05,y+h-.05,8))
+        ax.scatter(xx,yy,s=2,color=muted,linewidths=0)
+    title(6.96,"A","Choose recipes, culture cells, measure growth, then learn")
+    steps=[("Choose recipes","All conditions selected\nbefore measurements"),
+           ("Culture cells","96 wells per plate\n24 h in the simulator"),
+           ("Measure growth","Biomass observations\ninclude measurement noise"),
+           ("Update the model","Use results to choose\nthe next plate")]
+    for i,(head,desc) in enumerate(steps):
+        x=.18+i*1.85
+        box(x,5.88,1.60,.78)
+        text(x+.80,6.44,head,9,ha="center",weight="bold")
+        text(x+.80,6.15,desc,8,ha="center",va="center",linespacing=1.5)
+        if i<3: arrow((x+1.62,6.27),(x+1.82,6.27))
+    ax.plot([6.53,6.53,.98,.98],[5.87,5.67,5.67,5.85],color=muted,lw=.8)
+    arrow((.98,5.67),(.98,5.87))
+    text(3.75,5.44,"Each new round waits for the preceding culture and measurement cycle",8,ha="center")
+    text(.25,5.07,"Fixed budget",9,weight="bold")
+    text(1.42,5.07,"1 initial plate  +  4 adaptive plates  =  5 culture rounds",9)
+    text(1.42,4.85,"96 initial recipes; 80 recipes per adaptive plate, with selected replicates",8)
+    ax.axhline(4.62,xmin=.025,xmax=.975,color="#CFD8DE",lw=.8)
+    title(4.35,"B","An essential ingredient is not always the limiting ingredient")
+    text(.25,4.10,"Essential: required for growth.   Limiting: constrains growth in the current recipe.",9)
+    for x,vals,lim,recipe in [(.55,[.25,.75,.65],0,"Recipe 1"),(4.20,[.75,.25,.65],1,"Recipe 2")]:
+        text(x+1.10,3.77,recipe,9,ha="center",weight="bold")
+        for j,v in enumerate(vals):
+            bx=x+.25+j*.72
+            col="#AF4D25" if j==lim else "#AEBCC5"
+            ax.add_patch(plt.Rectangle((bx,2.65),.43,v,facecolor=col,edgecolor="none"))
+            text(bx+.215,2.48,"ABC"[j],9,ha="center",weight="bold" if j==lim else "normal")
+            if j==lim:
+                ax.annotate("limiting",(bx+.215,2.65+v),xytext=(bx+.215,3.55),
+                            ha="center",fontsize=8,color=col,
+                            arrowprops=dict(arrowstyle="->",color=col,lw=.8))
+        ax.plot([x+.12,x+2.24],[2.65,2.65],color=muted,lw=.6)
+    text(3.75,3.16,"Change the\nrecipe",8,ha="center",va="center")
+    arrow((3.2,2.91),(4.02,2.91))
+    text(.25,2.17,"A, B and C are all essential; the ingredient limiting growth can change between recipes.",8.5)
+    text(.25,1.95,"Schematic: bar heights represent growth-support terms, not measured concentrations or results.",8)
+    ax.axhline(1.77,xmin=.025,xmax=.975,color="#CFD8DE",lw=.8)
+    title(1.50,"C","Higher best-discovered biomass within the same five-plate budget")
+    for y,name,color in [(.98,"DS GP KB",COLORS["gp_bo_kb"]),(.42,"TabPFN KB",COLORS["tabpfn_kb"])]:
+        text(.25,y+.14,name,9,weight="bold")
+        for i in range(5): plate(1.35+i*.72,y)
+    arrow((5.00,.91),(5.36,.91))
+    box(5.47,.33,1.78,.94,"#EEF6FB")
+    raw=pd.read_csv(DATA/"raw_sensitivity.csv")
+    for y,d in [(1.01,80),(.64,120)]:
+        v=raw[(raw.d==d)&(raw.reference=="gp_bo_kb")&(raw.metric=="relative biomass")]["mean"].iloc[0]
+        text(5.60,y,f"{d} components: +{100*v:.1f}%",9,weight="bold")
+    text(.25,.12,"Mean relative gain in best tested biomass; simulated outcomes, not laboratory validation (Fig 2).",8)
+    save(fig,"Fig1")
 
 
 def fig2():
-    """(A) gain by number of components; (B) 120 variables with and without 120 components."""
+    """Show all 20 scenario effects, using the manuscript's seed-first estimator."""
     raw = pd.read_csv(DATA / "raw_sensitivity.csv")
     emb = pd.read_csv(DATA / "embedding_contrasts.csv")
-    fig, ax = plt.subplots(1, 2, figsize=(WIDTH, 2.9))
-    for ref, shift in (("gp_bo_kb", 0.0), ("gp_qlognei", 0.10)):
-        q = raw[(raw.reference == ref) & (raw.metric == "relative biomass")].sort_values("d")
-        x = np.arange(len(q)) + shift
-        ax[0].errorbar(x, 100 * q["mean"],
-                       yerr=100 * np.array([q["mean"] - q.ci_lo, q.ci_hi - q["mean"]]),
-                       marker="o", ms=4, capsize=3, label="vs " + LABELS[ref], color=COLORS[ref])
-    ax[0].axhline(0, color="black", lw=0.7)
-    ax[0].set_xticks(np.arange(5), [8, 20, 40, 80, 120])
+    runs=pd.concat([pd.read_csv(ROOT/f"results/v2a_runs_{p}.csv") for p in ("P1A","P3")])
+    last=runs[runs["round"]==4]
+    assert not last.duplicated(["n_sub","method","scenario","seed"]).any()
+    assert last.groupby(["n_sub","method","scenario"]).seed.nunique().eq(5).all()
+    means=last.groupby(["n_sub","scenario","method"]).best_true.mean().unstack("method")
+    effects=[]
+    fig, ax = plt.subplots(1,2,figsize=(WIDTH,3.8),gridspec_kw={"width_ratios":[1.6,1]})
+    rng=np.random.default_rng(20261001)
+    for ref,shift,marker in (("gp_bo_kb",-.18,"o"),("gp_qlognei",.18,"s")):
+        q=raw[(raw.reference==ref)&(raw.metric=="relative biomass")].sort_values("d")
+        for i,row in enumerate(q.itertuples()):
+            m=means.loc[row.d]
+            v=100*(m.tabpfn_kb/m[ref]-1)
+            assert len(v)==20 and set(v.index)==set(range(20,40))
+            assert np.isclose(v.mean(),100*row.mean,atol=1e-8)
+            jitter=rng.uniform(-.085,.085,len(v))
+            ax[0].scatter(i+shift+jitter,v,s=15,marker=marker,color=COLORS[ref],alpha=.42,
+                          linewidths=0,zorder=2)
+            effects.extend(dict(d=row.d,scenario=int(sc),reference=ref,relative_gain_pct=float(value))
+                           for sc,value in v.items())
+        ax[0].errorbar(np.arange(len(q))+shift,100*q["mean"],
+                       yerr=100*np.array([q["mean"]-q.ci_lo,q.ci_hi-q["mean"]]),
+                       fmt=marker,ms=5,mec="white",mew=.6,capsize=3,elinewidth=1.4,
+                       label="vs "+LABELS[ref],color=COLORS[ref],zorder=4)
+    pd.DataFrame(effects).to_csv(OUT/"Fig2_scenario_effects.csv",index=False)
+    ax[0].axhline(0,color="#555555",lw=.7,zorder=1)
+    ax[0].set_xticks(np.arange(5),[8,20,40,80,120])
+    ax[0].set_xlim(-.6,4.6)
     ax[0].set_xlabel("Number of components")
     ax[0].set_ylabel("Gain of TabPFN KB in best biomass (%)")
-    ax[0].legend(frameon=False, loc="upper left")
-    panel(ax[0], "A")
-
-    e = emb[emb.d == 120].set_index("embedding").loc[["ambient", "rotate", "intrinsic"]]
-    ax[1].errorbar(range(3), e["mean"], yerr=np.array([e["mean"] - e.ci_lo, e.ci_hi - e["mean"]]),
-                   fmt="o", ms=4, color=COLORS["tabpfn_kb"], capsize=4)
-    ax[1].axhline(0, color="black", lw=0.7)
-    ax[1].set_xticks(range(3), ["8 components,\npadded", "8 components,\nmixed",
-                                "120 components"])
-    ax[1].set_xlim(-0.5, 2.5)
-    ax[1].set_xlabel("Growth model presented as 120 variables")
+    ax[0].legend(frameon=False,loc="upper left")
+    panel(ax[0],"A")
+    ax[0].set_title("Individual growth scenarios",loc="center",fontsize=9)
+    e=emb[emb.d==120].set_index("embedding").loc[["ambient","rotate","intrinsic"]]
+    ax[1].errorbar(range(3),e["mean"],yerr=np.array([e["mean"]-e.ci_lo,e.ci_hi-e["mean"]]),
+                   fmt="o",ms=5,color=COLORS["tabpfn_kb"],capsize=4)
+    ax[1].axhline(0,color="#555555",lw=.7)
+    ax[1].set_xticks(range(3),["8 comp.,\npadded","8 comp.,\nmixed","120 comp."])
+    ax[1].set_xlim(-.5,2.5)
+    ax[1].set_xlabel("Growth model (120 search variables)",fontsize=8)
     ax[1].set_ylabel("TabPFN KB − DS GP KB\n(normalized score)")
-    panel(ax[1], "B")
-    fig.tight_layout()
-    save(fig, "Fig2")
+    panel(ax[1],"B")
+    ax[1].set_title("Embedding controls",loc="center",fontsize=9)
+    fig.text(.08,.04,"A: small points = 20 scenarios per comparison; large markers = mean; bars = 95% bootstrap CI.",fontsize=8)
+    fig.tight_layout(rect=(0,.09,1,1),w_pad=1.4)
+    save(fig,"Fig2")
 
 
 def fig3():

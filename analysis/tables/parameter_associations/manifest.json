@@ -1,0 +1,11 @@
+{
+  "sources": {
+    "results/v2a_runs_P1A.csv": "f6cdb8aac3e8d8dcdfd4339ee3c294ac4db37e9ea9fcfb9807a17eccedf5d6d0",
+    "results/v2a_runs_P3.csv": "73dcc21b9a38b5564e61df1f702cfc483f1362e0e687f798bd8912b53522b977"
+  },
+  "simulator_sha256": "ee795d7fcae63757957283d1b6ddb584619ae42ca3ced1f0e53ef8ce0824d227",
+  "seed": 20261005,
+  "permutations": 99999,
+  "bootstrap": 10000,
+  "notes": "Post hoc screen of five descriptors at d=120; d=80 sensitivity uses the same scenario seeds and is not independent replication. Parameters reconstructed with the current scenario constructor; historical parameter arrays are not archived here."
+}

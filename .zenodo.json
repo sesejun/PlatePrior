@@ -1,7 +1,7 @@
 {
   "title": "PlatePrior: plate-wise batch Bayesian optimization of culture media with a pretrained tabular model",
   "upload_type": "software",
-  "description": "<p>PlatePrior chooses the conditions of a 96-well plate with TabPFN, a pretrained tabular model used without retraining, and the Kriging believer rule. This record contains the implementation, the simulation benchmark, the run-level results of all 8,920 simulated campaigns, and the scripts that regenerate every table and figure of the manuscript <em>Essential components, not component count, determine when a pretrained model improves simulated culture-medium optimization</em> (Jun Sese). All results are from simulation.</p><p>Code: MIT License. Data, summary tables and figures (results/, analysis/tables/, analysis/figures/): CC BY 4.0.</p>",
+  "description": "<p>PlatePrior chooses the conditions of a 96-well plate with TabPFN, a pretrained tabular model used without retraining, and the Kriging believer rule. This record contains the implementation, the simulation benchmark, the run-level results of all 8,920 simulated campaigns, and the scripts that regenerate every table and figure of the manuscript <em>A tabular foundation model finds higher-biomass media with limited experimental feedback in simulated culture-medium optimization</em> (Jun Sese). All results are from simulation.</p><p>Code: MIT License. Data, summary tables and figures (results/, analysis/tables/, analysis/figures/): CC BY 4.0.</p>",
   "creators": [
     {"name": "Sese, Jun", "affiliation": "Humanome Lab., Inc."}
   ],
