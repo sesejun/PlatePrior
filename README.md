@@ -17,7 +17,8 @@ results of all 8,920 simulated campaigns, and the scripts that regenerate every 
 figure of the accompanying manuscript:
 
 > Jun Sese. A tabular foundation model finds higher-biomass media with limited experimental
-> feedback in simulated culture-medium optimization. Manuscript submitted.
+> feedback in simulated culture-medium optimization. Preprint (not peer reviewed), Zenodo, 2026.
+> doi:[10.5281/zenodo.23230230](https://doi.org/10.5281/zenodo.23230230)
 
 All results are from simulation; no laboratory data are included.
 
@@ -119,7 +120,10 @@ license terms.
 
 ## Citation
 
-Please cite the manuscript above. To cite this software and data, use the Zenodo record:
+Please cite the manuscript above: preprint version 1,
+doi:[10.5281/zenodo.23230231](https://doi.org/10.5281/zenodo.23230231); all versions,
+doi:[10.5281/zenodo.23230230](https://doi.org/10.5281/zenodo.23230230).
+To cite this software and data, use the Zenodo record:
 version 1.0.1 (the version cited in the manuscript), doi:[10.5281/zenodo.23200480](https://doi.org/10.5281/zenodo.23200480);
 all versions,
 doi:[10.5281/zenodo.23154571](https://doi.org/10.5281/zenodo.23154571) (see also `CITATION.cff`).
